@@ -1,0 +1,14 @@
+{
+  "name": "webcrawler",
+  "version": "1.0.0",
+  "description": "WebCrawler desenvolvido para a disciplina de Segurança de Dados - ADS - IFPB 2018.2",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Aguirre Sabino",
+  "license": "MIT",
+  "dependencies": {
+    "puppeteer": "^1.10.0"
+  }
+}
