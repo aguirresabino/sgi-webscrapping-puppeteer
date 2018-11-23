@@ -6,7 +6,7 @@ Implementação simples de um WebCrawler utilizando o módulo nodejs Puppeteer, 
 ```
 npm i
 ```
-* Execute a aplica com o node:
+* Execute a aplicação com o node:
 ```
 node index.js
 ```
