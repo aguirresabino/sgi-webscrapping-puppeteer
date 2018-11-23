@@ -1,0 +1,87 @@
+Node.js — Express— Refatorando suas rotas
+conhecimento básico do Express
+conhecimento básico de modularização
+conhecimento básico de map/reduce
+conhecimento básico de módulos
+O código funcionando se encontra https://github.com/suissa/express-generic-routes
+E eu ainda criei outro módulo (Book) apenas para você ver que basta copiar a pasta de um módulo, colar ela em modules e renomea-la!
+Express
+Imagine que você iniciou um projeto via express-generator e abre o seguinte arquivo: routes/users.js
+
+Vou apenas atualizar ele e colocar no CodeStyle que uso e mudar a mensagem:
+
+Quando você entrar na rota http://localhost:3000/users irá receber a mensagem: list.
+Depois disso vamos adicionar as rotas do CRUD:
+
+Analisando o código acima podemos inferir um padrão bem claro:
+router[ method ]( path, action )
+Então vamos criar um mecanismo para que as rotas possam ser geradas dinamicamente, mas como?
+Primeiramente criando uma estrutura com os dados que iremos necessitar, dessa forma:
+
+E agora tio Suissa?
+Simples! Precisamos criar uma função que irá receber a configuração das rotas e aplicar elas no router .
+
+MUITO SIMPLES NÃO?!
+Refatorando de verdade
+Entretanto, nesse formato nós perdemos a possibilidade de utilizar middlewares, e como sabemos eles são deveras importante. Então iremos adicionar essa possibilidade no nosso mecanismo.
+
+Percebeu que precisei apenas adicionar essa validação na nossa função createRoute para passá-la corretamente para o router .
+Tio Suissa e se eu quiser colocar mais de 1 middleware? É possível?
+Com toda certeza possível, antes veja como devemos passar mais de 1 middleware com o primeiro código que vimos:
+
+Agora veja a malandragem que eu faço:
+
+Usei o spread operator em route.middleware pois com ele eu consigo passar “transformar” um Array [ 1, 2, 3 ] em 1, 2, 3.
+Inversão de Controle — IoC
+Depois dessa automatização vamos deixar esse módulo sem as dependências do Express e fazer com que ela seja injetada!
+Para isso passaremos o router do nosso arquivo principal para o módulo de rotas que desejamos:
+
+Percebeu que não retornei o resultado de routes.map na linha 45 pois não é esse valor que deveremos retornar no nosso módulo e sim o router .
+ps: Sim isso poderia ter sido feito com forEach mas eu não quis! LOL
+Modularizando as Actions
+Agora imagine que você modularizou as ações das rotas assim:
+
+Com isso podemos fazer um automatizador que importe as ações:
+
+Entendeu como consegui fazer isso?
+Foi graças ao padrão de nomenclatura que eu dei para as constantes e os nomes dos arquivos:
+
+Então reutilizei o mesmo nome tanto para importar cada módulo como também para criar uma propriedade em Controller com o mesmo nome que já usávamos antes!
+Porém podemos mudar aquele map/reduce utilizando apenas o reduce para criarmos nosso Controller :
+
+Contudo ainda temos metadados que podemos utilizar para automatizar mais ainda nossas vidas:
+Podemos ler todos os arquivos que existem em actions e montarmos o Controller sem a necessidade de definirmos nenhum nome no osso arquivo de rotas, duvida???
+
+Agora precisamos remover as extensões que aí teremos exatamente o resultado que queremos:
+
+Basta arrumarmos isso no nosso código deixando assim:
+
+Generalizando
+Podemos melhorar AINDA mais esse código deixando nosso Array de rotas mais genérico transformando todos seus valores em String e usando-o assim:
+
+Aproveitei e deixei a criação do Controller e das Actions em uma chamada só:
+createController( createActions( ACTIONS_PATH_FULL ) )
+Modularizando AGAIN
+Agora sim podemos modularizar nossa CONFIGURAÇÃO das rotas sem dependência NENHUMA para que possamos reusá-las em outras libs de rotas como Fastify, Hapi, Koa, Restify, etc
+
+Dessa forma nós só precisamos chamar essa configuração das rotas quando vamos criar nosso módulo, veja a última linha:
+( router ) => createRoutes( router, require( ‘./routes.config’ ) )
+Separando a PORRA TODA
+Obviamente podemos modularizar ainda mais essa solução deixando-a assim:
+
+O código funcionando se encontra https://github.com/suissa/express-generic-routes
+E eu ainda criei outro módulo (Book) apenas para você ver que basta copiar a pasta de um módulo, colar ela em modules e renomea-la!
+Conclusão
+Não expliquei muito essa refatoração pois ela é bem simples, preferi me ater ao caminho que percorremos desde um exemplo padrão do Express até a modularização TOTAL de suas rotas.
+Com esse formato você pode reusar tanto suas ações como rotas com outras bibliotecas diferentes do Express.
+Agora você só precisa adicionar um Objeto na configuração das rotas e adicionar um arquivo com o mesmo nome da ação desejada na rota, na pasta actions!
+E aí gostou dessa refatoração? Pois ainda mostrarei como automatizar a geração dos seus Models/Schemas e depois a geração dos módulos la no arquivo principal, ex: app.js
+Espero que você tenha gostado e quem sabe use essa solução em seus projetos ou até melhore ela.
+Até mais!
+
+Ótimo post, muito bem explicado, aguardando o sobre a geração de models/schemas…
+muito massa e objetivo, parabens cara, continue nos dando conteudo assim :)
+ps: um artigo com passaport para api seria top
+
+Requisitos para leitura:
+conhecimento básico do Node.js

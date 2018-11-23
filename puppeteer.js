@@ -6,15 +6,15 @@ Pupperteer = async (config = {}) => {
     await page.goto(config.page ? config.page : null);
     await page.waitFor(1000);
     //gerando pdf da página
-   /*  await page.pdf({
-        path: 'page.pdf',
-        format: 'A4'
-    }); */
+    /*  await page.pdf({
+         path: 'page.pdf',
+         format: 'A4'
+     }); */
     //tirando screenshot da página
-    await page.screenshot({path: 'page.png'});
+    //await page.screenshot({ path: 'page.png' });
 
-    // Scrape
-    const result = await page.evaluate(() => {
+    //globo esporte
+    /* const result = await page.evaluate(() => {
         const result = {
             title: document.title,
             posicoes: [],
@@ -26,7 +26,13 @@ Pupperteer = async (config = {}) => {
         document.querySelectorAll('.classificacao__pontos--ponto').forEach(ponto => result.pontos.push(ponto.innerHTML));
 
         return result;
-    });
+    }); */
+
+    const result = await page.evaluate(() => {
+        const result = [];
+        document.querySelectorAll('.graf').forEach(content => result.push(content.textContent));
+        return result;
+    })
 
     browser.close();
     return result;
